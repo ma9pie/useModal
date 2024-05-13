@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
 import type { Meta } from '@storybook/react';
-import React, { useState } from 'react';
+import React from 'react';
 
+import TestModal from '@/components/modal/TestModal';
 import useModal from '@/hooks/useModal';
 
 const meta = {
@@ -13,79 +14,20 @@ const meta = {
 export default meta;
 
 const App = () => {
-  const { openModal, closeModal, changeModal } = useModal();
-
-  const [count, setCount] = useState(0);
-
-  const openTest1Modal = () => {
-    openModal({
-      id: 'test1',
-      component: () => (
-        <div>
-          <Button onClick={openTest2Modal}>openTest2Modal</Button>
-          <Button onClick={changeToTest2Modal}>changeToTest2Modal</Button>
-        </div>
-      ),
-    });
-  };
-
-  const openTest2Modal = () => {
-    openModal({
-      id: 'test2',
-      component: () => <div>test2</div>,
-      onAfterClose: async () => {
-        closeModal('test1');
-      },
-    });
-  };
-  const changeToTest2Modal = () => {
-    changeModal({
-      id: 'test2',
-      component: () => <div>test2</div>,
-    });
-  };
-
-  const open2Modal = () => {
-    openModal({
-      id: 'test1',
-      component: () => (
-        <div>
-          <p>test1</p>
-          <p>test1</p>
-          <p>test1</p>
-          <p>test1</p>
-        </div>
-      ),
-    });
-    openModal({
-      id: 'test2',
-      component: () => (
-        <div>
-          <Button onClick={close2Modal}>close2Modal</Button>
-        </div>
-      ),
-    });
-  };
-
-  const close2Modal = () => {
-    closeModal('test1');
-    closeModal('test2');
-  };
-
-  const batchTest = () => {
-    // setCount(count + 1);
-    // setCount(count + 1);
-    // setCount(count + 1);
-    setCount((c) => c + 1);
-    setCount((c) => c + 1);
-    setCount((c) => c + 1);
-  };
+  const { openModal, closeModal } = useModal({
+    id: 'test',
+    component: () => <TestModal close={closeModal}></TestModal>,
+    onAfterOpen: () => {
+      console.log('opend');
+    },
+    onAfterClose: () => {
+      console.log('closed');
+    },
+  });
 
   return (
     <Container>
-      {/* <Button onClick={batchTest}>{`count : ${count}`}</Button> */}
-      <Button onClick={openTest1Modal}>openTest1Modal</Button>
-      <Button onClick={open2Modal}>open2Modal</Button>
+      <Button onClick={openModal}>openTestModal</Button>
     </Container>
   );
 };

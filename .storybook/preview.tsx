@@ -1,5 +1,5 @@
 import type { Preview } from '@storybook/react';
-import ModalProvider from '../src/components/provider/ModalProvider';
+import ModalProvider from '../src/components/prodiver/ModalProvider';
 import React from 'react';
 
 const preview: Preview = {

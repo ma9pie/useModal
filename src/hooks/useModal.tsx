@@ -1,86 +1,68 @@
 import { useCallback, useContext } from 'react';
 
-import { ModalContext } from '@/components/provider/ModalProvider';
-import { ModalProps, Modals, ModalType } from '@/types';
+import { ModalContext } from '@/components/prodiver/ModalProvider';
+import { Modals } from '@/types';
 import { createUid, delay } from '@/utils';
 
-const useModal = () => {
-  const { deleteDelay, modals, setModals } = useContext(ModalContext);
+interface Props {
+  id: string;
+  component?: () => JSX.Element;
+  onAfterOpen?: () => void;
+  onAfterClose?: () => void;
+}
 
-  // Check the most recently opened modal id
-  const getRecentModalId = useCallback(() => {
-    const arr = Array.from(modals.values()).sort(
-      (a: ModalProps, b: ModalProps) => {
-        const createdAtA = a.createdAt || 0;
-        const createdAtB = b.createdAt || 0;
-        return createdAtB - createdAtA;
+const useModal = ({
+  id,
+  component,
+  onAfterOpen = () => {},
+  onAfterClose = () => {},
+}: Props) => {
+  const { deleteDelay, setModals } = useContext(ModalContext);
+
+  const openModal = useCallback(() => {
+    setModals((prevState: Modals) => {
+      const newState = new Map(prevState);
+      if (id && newState.has(id)) {
+        return prevState;
       }
-    );
-    if (arr.length === 0) return null;
-    return arr[0].id;
-  }, [modals]);
+      const key = id || createUid();
+      const isOpen = true;
+      const createdAt = new Date().getTime();
+      const modalData = {
+        id: key,
+        isOpen,
+        createdAt,
+        component,
+      };
+      newState.set(key, modalData);
+      onAfterOpen();
+      return newState;
+    });
+  }, [id, component, onAfterOpen, setModals]);
 
-  const openModal = useCallback(
-    (props: ModalProps) => {
-      setModals((prevMap: Modals) => {
-        const newMap = new Map(prevMap);
-        if (props.id && newMap.has(props.id)) {
-          return prevMap;
-        }
-        const id = props.id || createUid();
-        props.id = id;
-        props.type = props.type || ModalType.Modal;
-        props.isOpen = true;
-        props.createdAt = new Date().getTime();
-        newMap.set(id, props);
-        return newMap;
-      });
-    },
-    [setModals]
-  );
-
-  const closeModal = useCallback(
-    async (id?: string) => {
-      const _id = id || getRecentModalId();
-      if (!_id) return;
-      setModals((prevMap: Modals) => {
-        const newMap = new Map(prevMap);
-        const props = newMap.get(_id);
-        if (!props) {
-          return prevMap;
-        }
-        props.isOpen = false;
-        newMap.set(_id, props);
-        return newMap;
-      });
-      await delay(deleteDelay);
-      setModals((prevMap: Modals) => {
-        const newMap = new Map(prevMap);
-        newMap.delete(_id);
-        return newMap;
-      });
-      return;
-    },
-    [deleteDelay, setModals, getRecentModalId]
-  );
-
-  const changeModal = useCallback(
-    async (props: ModalProps) => {
-      await closeModal();
-      openModal(props);
-    },
-    [openModal, closeModal]
-  );
-
-  const openBottomSheet = (props: ModalProps) => {
-    openModal({ ...props, type: ModalType.BottomSheet });
-  };
+  const closeModal = useCallback(async () => {
+    setModals((prevState: Modals) => {
+      const newState = new Map(prevState);
+      const modalData = newState.get(id);
+      if (!modalData) {
+        return prevState;
+      }
+      modalData.isOpen = false;
+      newState.set(id, modalData);
+      return newState;
+    });
+    await delay(deleteDelay);
+    setModals((prevState: Modals) => {
+      const newState = new Map(prevState);
+      newState.delete(id);
+      onAfterClose();
+      return newState;
+    });
+  }, [id, deleteDelay, onAfterClose, setModals]);
 
   return {
     openModal,
     closeModal,
-    changeModal,
-    openBottomSheet,
   };
 };
 
