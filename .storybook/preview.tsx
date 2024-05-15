@@ -13,7 +13,7 @@ const preview: Preview = {
   },
   decorators: [
     (Story) => (
-      <ModalProvider>
+      <ModalProvider duration={200}>
         <Story></Story>
       </ModalProvider>
     ),

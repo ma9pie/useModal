@@ -14,12 +14,12 @@ import { ModalProps, Modals } from '@/types';
 type Props = {
   openAnimationName?: string;
   closeAnimationName?: string;
-  deleteDelay?: number;
+  duration?: number;
   children: ReactNode;
 };
 
 export const ModalContext = createContext({
-  deleteDelay: 0,
+  duration: 0,
   modals: new Map(),
   setModals: (value: SetStateAction<Modals>) => {},
 });
@@ -27,7 +27,7 @@ export const ModalContext = createContext({
 const ModalProvider = ({
   openAnimationName = 'fade-in',
   closeAnimationName = 'fade-out',
-  deleteDelay = 200,
+  duration = 200,
   children,
 }: Props) => {
   const [modals, setModals] = useState<Modals>(new Map());
@@ -38,7 +38,7 @@ const ModalProvider = ({
   );
 
   return (
-    <ModalContext.Provider value={{ deleteDelay, modals, setModals }}>
+    <ModalContext.Provider value={{ duration, modals, setModals }}>
       <Container id="modal-provider">
         {modalList.map(({ id, isOpen, component }) => (
           <ModalWrapper
@@ -46,7 +46,7 @@ const ModalProvider = ({
             isOpen={isOpen}
             openAnimationName={openAnimationName}
             closeAnimationName={closeAnimationName}
-            duration={deleteDelay}
+            duration={duration}
           >
             {component && component()}
           </ModalWrapper>

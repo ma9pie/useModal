@@ -17,7 +17,7 @@ const useModal = ({
   onAfterOpen = () => {},
   onAfterClose = () => {},
 }: Props) => {
-  const { deleteDelay, setModals } = useContext(ModalContext);
+  const { duration, setModals } = useContext(ModalContext);
 
   const openModal = useCallback(() => {
     setModals((prevState: Modals) => {
@@ -51,14 +51,14 @@ const useModal = ({
       newState.set(id, modalData);
       return newState;
     });
-    await delay(deleteDelay);
+    await delay(duration);
     setModals((prevState: Modals) => {
       const newState = new Map(prevState);
       newState.delete(id);
       onAfterClose();
       return newState;
     });
-  }, [id, deleteDelay, onAfterClose, setModals]);
+  }, [id, duration, onAfterClose, setModals]);
 
   return {
     openModal,
