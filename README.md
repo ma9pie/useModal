@@ -1,8 +1,8 @@
 # React useModal hooks
-Simple custom hooks for react modal management system.
+Simple custom hooks for react modal management.
 
 [npm-url]: https://www.npmjs.com/package/@ma9pie/use-modal
-[license-image]: https://img.shields.io/badge/license-MIT-blue.svg
+[license-image]: https://img.shields.io/badge/license-MIT-red.svg
 [npm-version-image]: https://img.shields.io/npm/v/@ma9pie/use-modal.svg
 [npm-downloads-image]: https://img.shields.io/npm/dt/@ma9pie/use-modal.svg
 
@@ -13,9 +13,11 @@ Simple custom hooks for react modal management system.
 npm i @ma9pie/use-modal
 ```
 
-### 🕹 Use
+### 👨‍💻 Use
+
 duration is the animation-duration prop when the modal opens and closes.
 ```javascript
+// root
 import { ModalProvider } from '@ma9pie/use-modal';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -32,4 +34,79 @@ root.render(
     </ModalProvider>
   </React.StrictMode>
 );
+```
+
+```javascript
+// Modal.tsx
+import React from 'react';
+
+interface Props {
+  close: () => void;
+}
+
+const Modal = ({ close }: Props) => {
+  return (
+    <div>
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.4)',
+          zIndex: 1000,
+        }}
+        onClick={close}
+      ></div>
+      <div
+        style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          width: 240,
+          padding: 16,
+          borderRadius: 8,
+          backgroundColor: 'white',
+          transform: 'translate(-50%, -50%)',
+          overflow: 'hidden',
+          zIndex: 1000,
+        }}
+      >
+        TestModal
+      </div>
+    </div>
+  );
+};
+
+export default Modal;
+```
+
+```javascript
+// App.tsx
+import { useModal } from '@ma9pie/use-modal';
+import React from 'react';
+
+import Modal from './components/Modal';
+
+const App = () => {
+  const { openModal, closeModal } = useModal({
+    id: 'modal',
+    component: () => <Modal close={closeModal}></Modal>,
+    onAfterOpen: () => {
+      console.log('opend');
+    },
+    onAfterClose: () => {
+      console.log('closed');
+    },
+  });
+
+  return (
+    <div>
+      <button onClick={openModal}>openModal</button>
+    </div>
+  );
+};
+
+export default App;
 ```
