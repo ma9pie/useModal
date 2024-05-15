@@ -6,18 +6,18 @@ Simple custom hooks for react modal management.
 [npm-version-image]: https://img.shields.io/npm/v/@ma9pie/use-modal.svg
 [npm-downloads-image]: https://img.shields.io/npm/dt/@ma9pie/use-modal.svg
 
-[![][license-image]][npm-url] [![][npm-version-image]][npm-url] [![][npm-downloads-image]][npm-url]
+[![license-image]][npm-url] [![npm-version-image]][npm-url] [![npm-downloads-image]][npm-url]
 
 ### 📦 Install
 ```bash
 npm i @ma9pie/use-modal
 ```
 
-### 👨‍💻 Use
+### 👨‍💻 Usage
 
 duration is the animation-duration prop when the modal opens and closes.
 ```javascript
-// root
+// index.tsx
 import { ModalProvider } from '@ma9pie/use-modal';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -110,3 +110,9 @@ const App = () => {
 
 export default App;
 ```
+
+### 🤝 Contributing 
+Thank you for your interest in the Lite UI project. Your contributions are always welcome.
+
+### 📜 License
+[MIT](https://choosealicense.com/licenses/mit/)
