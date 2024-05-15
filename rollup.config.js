@@ -40,9 +40,6 @@ const config = {
       extensions,
       include: ['src/**/*'],
     }),
-    postcss({
-      plugins: [cssimport(), autoprefixer()],
-    }),
   ],
 };
 

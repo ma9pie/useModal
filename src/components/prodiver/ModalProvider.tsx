@@ -1,5 +1,3 @@
-import '@/styles/index.css';
-
 import styled from '@emotion/styled';
 import React, {
   createContext,
