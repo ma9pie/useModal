@@ -90,7 +90,7 @@ import React from 'react';
 import Modal from './components/Modal';
 
 const App = () => {
-  const { openModal, closeModal } = useModal({
+  const { isOpen, openModal, closeModal } = useModal({
     id: 'modal',
     component: () => <Modal close={closeModal}></Modal>,
     onAfterOpen: () => {
@@ -104,6 +104,7 @@ const App = () => {
   return (
     <div>
       <button onClick={openModal}>openModal</button>
+      <p>{isOpen ? 'opend' : 'closed'}</p>
     </div>
   );
 };

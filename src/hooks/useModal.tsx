@@ -1,4 +1,4 @@
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext, useState } from 'react';
 
 import { ModalContext } from '@/components/prodiver/ModalProvider';
 import { Modals } from '@/types';
@@ -19,6 +19,8 @@ const useModal = ({
 }: Props) => {
   const { duration, setModals } = useContext(ModalContext);
 
+  const [isOpen, setIsOpen] = useState(false);
+
   const openModal = useCallback(() => {
     setModals((prevState: Modals) => {
       const newState = new Map(prevState);
@@ -35,6 +37,7 @@ const useModal = ({
         component,
       };
       newState.set(key, modalData);
+      setIsOpen(true);
       onAfterOpen();
       return newState;
     });
@@ -55,15 +58,13 @@ const useModal = ({
     setModals((prevState: Modals) => {
       const newState = new Map(prevState);
       newState.delete(id);
+      setIsOpen(false);
       onAfterClose();
       return newState;
     });
   }, [id, duration, onAfterClose, setModals]);
 
-  return {
-    openModal,
-    closeModal,
-  };
+  return { isOpen, openModal, closeModal };
 };
 
 export default useModal;

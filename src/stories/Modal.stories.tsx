@@ -14,7 +14,7 @@ const meta = {
 export default meta;
 
 const App = () => {
-  const { openModal, closeModal } = useModal({
+  const { isOpen, openModal, closeModal } = useModal({
     id: 'test',
     component: () => <TestModal close={closeModal}></TestModal>,
     onAfterOpen: () => {
@@ -28,6 +28,7 @@ const App = () => {
   return (
     <Container>
       <Button onClick={openModal}>openTestModal</Button>
+      <p>{isOpen ? 'opend' : 'closed'}</p>
     </Container>
   );
 };
