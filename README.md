@@ -14,9 +14,7 @@ npm i @ma9pie/use-modal
 ```
 
 ### 👨‍💻 Usage
-
-duration is the animation-duration prop when the modal opens and closes.
-
+##### Wrap the root with a ModalProvider.
 ```javascript
 // index.tsx
 import { ModalProvider } from '@ma9pie/use-modal';
@@ -36,7 +34,9 @@ root.render(
   </React.StrictMode>
 );
 ```
+duration is the animation-duration prop when the modal opens and closes.
 
+##### Create Modal component.
 ```javascript
 // Modal.tsx
 import React, { ReactNode } from 'react';
@@ -82,9 +82,9 @@ const Modal = ({ children, close }: Props) => {
 };
 
 export default Modal;
-
 ```
 
+##### 1. Open & Close modal example.
 ```javascript
 // App.tsx
 import { useModal } from '@ma9pie/use-modal';
@@ -127,19 +127,141 @@ const App = () => {
 export default App;
 ```
 
+##### 2. Mutil modal example.
+```javascript
+// App.tsx
+import { useModal } from '@ma9pie/use-modal';
+import React from 'react';
+
+import Modal from './components/Modal';
+
+const FIRST_MODAL_ID = 'first-modal';
+const SECOND_MODAL_ID = 'second-modal';
+
+const App = () => {
+  const { openModal, closeModal } = useModal();
+
+  const openFirstModal = () => {
+    openModal({
+      id: FIRST_MODAL_ID,
+      component: () => (
+        <Modal
+          close={() => {
+            closeModal({
+              id: FIRST_MODAL_ID,
+            });
+          }}
+        >
+          <p>FirstModal</p>
+          <button onClick={openSecondModal}>openSecondModal</button>
+        </Modal>
+      ),
+    });
+  };
+
+  const openSecondModal = () => {
+    openModal({
+      id: SECOND_MODAL_ID,
+      component: () => (
+        <Modal
+          close={() => {
+            closeModal({
+              id: SECOND_MODAL_ID,
+            });
+          }}
+        >
+          <p>SecondModal</p>
+        </Modal>
+      ),
+    });
+  };
+
+  return (
+    <div>
+      <button onClick={openFirstModal}>openFirstModal</button>
+    </div>
+  );
+};
+
+export default App;
+```
+
+##### 3. Change modal example.
+```javascript
+// App.tsx
+import { useModal } from '@ma9pie/use-modal';
+import React from 'react';
+
+import Modal from './components/Modal';
+
+const FIRST_MODAL_ID = 'first-modal';
+const SECOND_MODAL_ID = 'second-modal';
+
+const App = () => {
+  const { openModal, closeModal, changeModal } = useModal();
+
+  const openFirstModal = () => {
+    openModal({
+      id: FIRST_MODAL_ID,
+      component: () => (
+        <Modal
+          close={() => {
+            closeModal({
+              id: FIRST_MODAL_ID,
+            });
+          }}
+        >
+          <p>FirstModal</p>
+          <button onClick={changeToSecondModal}>changeToSecondModal</button>
+        </Modal>
+      ),
+    });
+  };
+
+  const changeToSecondModal = () => {
+    changeModal({
+      id: SECOND_MODAL_ID,
+      closeId: FIRST_MODAL_ID,
+      component: () => (
+        <Modal
+          close={() => {
+            closeModal({
+              id: SECOND_MODAL_ID,
+            });
+          }}
+        >
+          <p>SecondModal</p>
+        </Modal>
+      ),
+    });
+  };
+
+  return (
+    <div>
+      <button onClick={openFirstModal}>openFirstModal</button>
+    </div>
+  );
+};
+
+export default App;
+```
+
 ### Types
 ```javascript
-interface IsOpen {
+export interface IsOpen {
   [key: string]: boolean;
 }
-interface OpenModalProps {
+export interface OpenModalProps {
   id: string;
   component?: () => JSX.Element;
   onAfterOpen?: () => void;
 }
-interface CloseModalProps {
+export interface CloseModalProps {
   id: string;
   onAfterClose?: () => void;
+}
+export interface changeModalProps extends OpenModalProps {
+  closeId: string;
 }
 ```
 

@@ -1,16 +1,7 @@
-import type { Meta } from '@storybook/react';
 import React from 'react';
 
-import TestModal from '@/components/modal/TestModal';
+import Modal from '@/components/modal/Modal';
 import useModal from '@/hooks/useModal';
-
-const meta = {
-  title: 'Components/Modal',
-  parameters: {},
-  argTypes: {},
-} satisfies Meta;
-
-export default meta;
 
 const MODAL_ID = 'test';
 
@@ -20,7 +11,7 @@ const App = () => {
   const openTestModal = () => {
     openModal({
       id: MODAL_ID,
-      component: () => <TestModal close={closeTestModal}></TestModal>,
+      component: () => <Modal close={closeTestModal}>TestModa</Modal>,
       onAfterOpen: () => {
         console.log('opend');
       },
@@ -44,6 +35,4 @@ const App = () => {
   );
 };
 
-export const Modal_ = {
-  render: () => <App></App>,
-};
+export default App;

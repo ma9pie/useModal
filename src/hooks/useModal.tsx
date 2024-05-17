@@ -1,7 +1,13 @@
 import { useCallback, useContext } from 'react';
 
 import { ModalContext } from '@/contexts';
-import { CloseModalProps, IsOpen, Modals, OpenModalProps } from '@/types';
+import {
+  changeModalProps,
+  CloseModalProps,
+  IsOpen,
+  Modals,
+  OpenModalProps,
+} from '@/types';
 import { delay } from '@/utils';
 
 const useModal = () => {
@@ -66,7 +72,16 @@ const useModal = () => {
     [duration, setIsOpen, setModals]
   );
 
-  return { isOpen, openModal, closeModal };
+  const changeModal = useCallback(
+    async (props: changeModalProps) => {
+      const { closeId, ...openModalprops } = props;
+      await closeModal({ id: closeId });
+      openModal(openModalprops);
+    },
+    [openModal, closeModal]
+  );
+
+  return { isOpen, openModal, closeModal, changeModal };
 };
 
 export default useModal;

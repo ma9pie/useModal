@@ -23,3 +23,6 @@ export interface CloseModalProps {
   id: string;
   onAfterClose?: () => void;
 }
+export interface changeModalProps extends OpenModalProps {
+  closeId: string;
+}
