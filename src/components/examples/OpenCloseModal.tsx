@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Modal from '@/components/modal/Modal';
+import Modal from '@/components/common/Modal';
 import useModal from '@/hooks/useModal';
 
 const MODAL_ID = 'test';
