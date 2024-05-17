@@ -89,23 +89,34 @@ import React from 'react';
 
 import Modal from './components/Modal';
 
+const MODAL_ID = 'test';
+
 const App = () => {
-  const { isOpen, openModal, closeModal } = useModal({
-    id: 'modal',
-    component: () => <Modal close={closeModal}></Modal>,
-    onAfterOpen: () => {
-      console.log('opend');
-    },
-    onAfterClose: () => {
-      console.log('closed');
-    },
-  });
+  const { openModal, closeModal } = useModal();
+
+  const openTestModal = () => {
+    openModal({
+      id: MODAL_ID,
+      component: () => <TestModal close={closeTestModal}></TestModal>,
+      onAfterOpen: () => {
+        console.log('opend');
+      },
+    });
+  };
+
+  const closeTestModal = () => {
+    closeModal({
+      id: MODAL_ID,
+      onAfterClose: () => {
+        console.log('closed');
+      },
+    });
+  };
 
   return (
-    <div>
-      <button onClick={openModal}>openModal</button>
-      <p>{isOpen ? 'opend' : 'closed'}</p>
-    </div>
+    <Container>
+      <Button onClick={openTestModal}>openTestModal</Button>
+    </Container>
   );
 };
 
