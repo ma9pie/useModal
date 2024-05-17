@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import React from 'react';
 
 interface Props {
-  close: () => {};
+  close: () => void;
 }
 
 const TestModal = ({ close }: Props) => {

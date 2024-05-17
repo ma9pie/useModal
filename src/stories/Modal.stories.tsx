@@ -13,22 +13,33 @@ const meta = {
 
 export default meta;
 
+const MODAL_ID = 'test';
+
 const App = () => {
-  const { isOpen, openModal, closeModal } = useModal({
-    id: 'test',
-    component: () => <TestModal close={closeModal}></TestModal>,
-    onAfterOpen: () => {
-      console.log('opend');
-    },
-    onAfterClose: () => {
-      console.log('closed');
-    },
-  });
+  const { openModal, closeModal } = useModal();
+
+  const openTestModal = () => {
+    openModal({
+      id: MODAL_ID,
+      component: () => <TestModal close={closeTestModal}></TestModal>,
+      onAfterOpen: () => {
+        console.log('opend');
+      },
+    });
+  };
+
+  const closeTestModal = () => {
+    closeModal({
+      id: MODAL_ID,
+      onAfterClose: () => {
+        console.log('closed');
+      },
+    });
+  };
 
   return (
     <Container>
-      <Button onClick={openModal}>openTestModal</Button>
-      <p>{isOpen ? 'opend' : 'closed'}</p>
+      <Button onClick={openTestModal}>openTestModal</Button>
     </Container>
   );
 };

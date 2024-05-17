@@ -1,70 +1,70 @@
-import { useCallback, useContext, useState } from 'react';
+import { useCallback, useContext } from 'react';
 
 import { ModalContext } from '@/components/prodiver/ModalProvider';
 import { Modals } from '@/types';
 import { createUid, delay } from '@/utils';
 
-interface Props {
+interface OpenModalProps {
   id: string;
   component?: () => JSX.Element;
   onAfterOpen?: () => void;
+}
+
+interface CloseModalProps {
+  id: string;
   onAfterClose?: () => void;
 }
 
-const useModal = ({
-  id,
-  component,
-  onAfterOpen = () => {},
-  onAfterClose = () => {},
-}: Props) => {
+const useModal = () => {
   const { duration, setModals } = useContext(ModalContext);
 
-  const [isOpen, setIsOpen] = useState(false);
+  const openModal = useCallback(
+    (props: OpenModalProps) => {
+      const { id, component, onAfterOpen } = props;
+      setModals((prevState: Modals) => {
+        const newState = new Map(prevState);
+        if (id && newState.has(id)) {
+          return prevState;
+        }
+        const modalData = {
+          id: id || createUid(),
+          isOpen: true,
+          createdAt: new Date().getTime(),
+          component,
+        };
+        newState.set(modalData.id, modalData);
+        onAfterOpen?.();
+        return newState;
+      });
+    },
+    [setModals]
+  );
 
-  const openModal = useCallback(() => {
-    setModals((prevState: Modals) => {
-      const newState = new Map(prevState);
-      if (id && newState.has(id)) {
-        return prevState;
-      }
-      const key = id || createUid();
-      const isOpen = true;
-      const createdAt = new Date().getTime();
-      const modalData = {
-        id: key,
-        isOpen,
-        createdAt,
-        component,
-      };
-      newState.set(key, modalData);
-      setIsOpen(true);
-      onAfterOpen();
-      return newState;
-    });
-  }, [id, component, onAfterOpen, setModals]);
+  const closeModal = useCallback(
+    async (props: CloseModalProps) => {
+      const { id, onAfterClose } = props;
+      setModals((prevState: Modals) => {
+        const newState = new Map(prevState);
+        const modalData = newState.get(id);
+        if (!modalData) {
+          return prevState;
+        }
+        modalData.isOpen = false;
+        newState.set(id, modalData);
+        return newState;
+      });
+      await delay(duration);
+      setModals((prevState: Modals) => {
+        const newState = new Map(prevState);
+        newState.delete(id);
+        onAfterClose?.();
+        return newState;
+      });
+    },
+    [duration, setModals]
+  );
 
-  const closeModal = useCallback(async () => {
-    setModals((prevState: Modals) => {
-      const newState = new Map(prevState);
-      const modalData = newState.get(id);
-      if (!modalData) {
-        return prevState;
-      }
-      modalData.isOpen = false;
-      newState.set(id, modalData);
-      return newState;
-    });
-    await delay(duration);
-    setModals((prevState: Modals) => {
-      const newState = new Map(prevState);
-      newState.delete(id);
-      setIsOpen(false);
-      onAfterClose();
-      return newState;
-    });
-  }, [id, duration, onAfterClose, setModals]);
-
-  return { isOpen, openModal, closeModal };
+  return { openModal, closeModal };
 };
 
 export default useModal;
