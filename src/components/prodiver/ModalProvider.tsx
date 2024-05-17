@@ -1,13 +1,8 @@
 import styled from '@emotion/styled';
-import React, {
-  createContext,
-  ReactNode,
-  SetStateAction,
-  useMemo,
-  useState,
-} from 'react';
+import React, { ReactNode, useMemo, useState } from 'react';
 
-import { ModalProps, Modals } from '@/types';
+import { ModalContext } from '@/contexts';
+import { IsOpen, ModalProps, Modals } from '@/types';
 
 type Props = {
   openAnimationName?: string;
@@ -16,18 +11,13 @@ type Props = {
   children: ReactNode;
 };
 
-export const ModalContext = createContext({
-  duration: 0,
-  modals: new Map(),
-  setModals: (value: SetStateAction<Modals>) => {},
-});
-
 const ModalProvider = ({
   openAnimationName = 'fade-in',
   closeAnimationName = 'fade-out',
   duration = 200,
   children,
 }: Props) => {
+  const [isOpen, setIsOpen] = useState<IsOpen>({});
   const [modals, setModals] = useState<Modals>(new Map());
 
   const modalList: ModalProps[] = useMemo(
@@ -36,7 +26,9 @@ const ModalProvider = ({
   );
 
   return (
-    <ModalContext.Provider value={{ duration, modals, setModals }}>
+    <ModalContext.Provider
+      value={{ duration, isOpen, modals, setIsOpen, setModals }}
+    >
       <Container id="modal-provider">
         {modalList.map(({ id, isOpen, component }) => (
           <ModalWrapper

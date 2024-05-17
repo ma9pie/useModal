@@ -11,3 +11,15 @@ export interface ModalProps {
   onAfterClose?: () => void;
 }
 export type Modals = Map<string, ModalProps>;
+export interface IsOpen {
+  [key: string]: boolean;
+}
+export interface OpenModalProps {
+  id: string;
+  component?: () => JSX.Element;
+  onAfterOpen?: () => void;
+}
+export interface CloseModalProps {
+  id: string;
+  onAfterClose?: () => void;
+}

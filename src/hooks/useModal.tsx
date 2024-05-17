@@ -1,48 +1,45 @@
 import { useCallback, useContext } from 'react';
 
-import { ModalContext } from '@/components/prodiver/ModalProvider';
-import { Modals } from '@/types';
-import { createUid, delay } from '@/utils';
-
-interface OpenModalProps {
-  id: string;
-  component?: () => JSX.Element;
-  onAfterOpen?: () => void;
-}
-
-interface CloseModalProps {
-  id: string;
-  onAfterClose?: () => void;
-}
+import { ModalContext } from '@/contexts';
+import { CloseModalProps, IsOpen, Modals, OpenModalProps } from '@/types';
+import { delay } from '@/utils';
 
 const useModal = () => {
-  const { duration, setModals } = useContext(ModalContext);
+  const { duration, isOpen, setIsOpen, setModals } = useContext(ModalContext);
 
   const openModal = useCallback(
     (props: OpenModalProps) => {
       const { id, component, onAfterOpen } = props;
+      setIsOpen((prevState: IsOpen) => {
+        const newState = { ...prevState, [id]: true };
+        return newState;
+      });
       setModals((prevState: Modals) => {
         const newState = new Map(prevState);
-        if (id && newState.has(id)) {
+        if (newState.has(id)) {
           return prevState;
         }
         const modalData = {
-          id: id || createUid(),
+          id,
           isOpen: true,
           createdAt: new Date().getTime(),
           component,
         };
-        newState.set(modalData.id, modalData);
+        newState.set(id, modalData);
         onAfterOpen?.();
         return newState;
       });
     },
-    [setModals]
+    [setIsOpen, setModals]
   );
 
   const closeModal = useCallback(
     async (props: CloseModalProps) => {
       const { id, onAfterClose } = props;
+      setIsOpen((prevState: IsOpen) => {
+        const newState = { ...prevState, [id]: false };
+        return newState;
+      });
       setModals((prevState: Modals) => {
         const newState = new Map(prevState);
         const modalData = newState.get(id);
@@ -54,6 +51,11 @@ const useModal = () => {
         return newState;
       });
       await delay(duration);
+      setIsOpen((prevState: IsOpen) => {
+        const newState = { ...prevState };
+        delete newState[id];
+        return newState;
+      });
       setModals((prevState: Modals) => {
         const newState = new Map(prevState);
         newState.delete(id);
@@ -61,10 +63,10 @@ const useModal = () => {
         return newState;
       });
     },
-    [duration, setModals]
+    [duration, setIsOpen, setModals]
   );
 
-  return { openModal, closeModal };
+  return { isOpen, openModal, closeModal };
 };
 
 export default useModal;

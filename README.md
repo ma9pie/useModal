@@ -16,6 +16,7 @@ npm i @ma9pie/use-modal
 ### 👨‍💻 Usage
 
 duration is the animation-duration prop when the modal opens and closes.
+
 ```javascript
 // index.tsx
 import { ModalProvider } from '@ma9pie/use-modal';
@@ -92,7 +93,7 @@ import Modal from './components/Modal';
 const MODAL_ID = 'test';
 
 const App = () => {
-  const { openModal, closeModal } = useModal();
+  const { isOpen, openModal, closeModal } = useModal();
 
   const openTestModal = () => {
     openModal({
@@ -114,13 +115,30 @@ const App = () => {
   };
 
   return (
-    <Container>
-      <Button onClick={openTestModal}>openTestModal</Button>
-    </Container>
+    <div>
+      <button onClick={openTestModal}>openTestModal</button>
+      <p>{String(isOpen[MODAL_ID])}</p>
+    </div>
   );
 };
 
 export default App;
+```
+
+### Types
+```javascript
+interface IsOpen {
+  [key: string]: boolean;
+}
+interface OpenModalProps {
+  id: string;
+  component?: () => JSX.Element;
+  onAfterOpen?: () => void;
+}
+interface CloseModalProps {
+  id: string;
+  onAfterClose?: () => void;
+}
 ```
 
 ### 🤝 Contributing 
