@@ -39,13 +39,14 @@ root.render(
 
 ```javascript
 // Modal.tsx
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 interface Props {
+  children?: ReactNode;
   close: () => void;
 }
 
-const Modal = ({ close }: Props) => {
+const Modal = ({ children, close }: Props) => {
   return (
     <div>
       <div
@@ -74,13 +75,14 @@ const Modal = ({ close }: Props) => {
           zIndex: 1000,
         }}
       >
-        TestModal
+        {children}
       </div>
     </div>
   );
 };
 
 export default Modal;
+
 ```
 
 ```javascript
@@ -98,7 +100,7 @@ const App = () => {
   const openTestModal = () => {
     openModal({
       id: MODAL_ID,
-      component: () => <TestModal close={closeTestModal}></TestModal>,
+      component: () => <Modal close={closeTestModal}>TestModa</Modal>,
       onAfterOpen: () => {
         console.log('opend');
       },
@@ -139,6 +141,11 @@ interface CloseModalProps {
   id: string;
   onAfterClose?: () => void;
 }
+```
+
+### 📖 StroyBook
+```bash
+npm run storybook
 ```
 
 ### 🤝 Contributing 
